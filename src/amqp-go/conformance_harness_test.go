@@ -6,15 +6,15 @@
 // assertions runs against whichever broker AMQP_TARGET selects, so both are held
 // to byte-identical wire expectations:
 //
-//	# embedded StrangeQ (default):
+//	# embedded HardhatQ (default):
 //	go test -tags=conformance -run TestConformance . -v
 //	# real RabbitMQ 4.x in docker on localhost:5672:
 //	AMQP_TARGET=rabbitmq go test -tags=conformance -run TestConformance . -v
 //
 // Method: TDD-for-conformance. Every expected wire value was captured against
 // real RabbitMQ 4.3.2 FIRST (see the LOCKED-* constants below and w7-report.md),
-// then asserted against embedded StrangeQ. Where StrangeQ genuinely diverges the
-// assertion is target-aware (asserts RabbitMQ's truth on rabbitmq, StrangeQ's
+// then asserted against embedded HardhatQ. Where HardhatQ genuinely diverges the
+// assertion is target-aware (asserts RabbitMQ's truth on rabbitmq, HardhatQ's
 // documented behaviour on strangeq) and the divergence is logged — a documented
 // xfail, never a false green.
 package main
@@ -46,7 +46,7 @@ import (
 // ----------------------------------------------------------------------------
 
 const (
-	// x-death reasons (RabbitMQ rabbit_dead_letter.erl; StrangeQ DeadLetterReason).
+	// x-death reasons (RabbitMQ rabbit_dead_letter.erl; HardhatQ DeadLetterReason).
 	reasonExpired  = "expired"
 	reasonRejected = "rejected"
 	reasonMaxLen   = "maxlen"
@@ -57,7 +57,7 @@ const (
 	// w7-report.md §7. The combined string "low on disk & memory" is an
 	// EMPIRICALLY captured byte value (RabbitMQ joins over the active alarm SET;
 	// the element order is an internal representation detail, not a guaranteed
-	// sort), NOT "low on memory & low on disk". StrangeQ's alarmReason() was FIXED
+	// sort), NOT "low on memory & low on disk". HardhatQ's alarmReason() was FIXED
 	// in W7 to match, so the two are equal.
 	lockedRMQReasonMem      = "low on memory"
 	lockedRMQReasonDisk     = "low on disk"
@@ -116,7 +116,7 @@ func uniqueName(prefix string) string {
 }
 
 // ----------------------------------------------------------------------------
-// confBroker: dual-target broker handle. Embedded StrangeQ owns its storage
+// confBroker: dual-target broker handle. Embedded HardhatQ owns its storage
 // explicitly so restart() can Close() and reopen the SAME path (durable
 // round-trip). RabbitMQ is the live container; restart() is a no-op there (a
 // durable queue survives in the running broker).
@@ -141,7 +141,7 @@ func newConfBroker(t *testing.T) *confBroker {
 }
 
 // newConfBrokerCfg builds a dual-target broker, letting the caller tweak the
-// embedded StrangeQ config before Build() (e.g. to arm resource alarms). The
+// embedded HardhatQ config before Build() (e.g. to arm resource alarms). The
 // mutator is never invoked for the RabbitMQ target.
 func newConfBrokerCfg(t *testing.T, mutate func(*config.AMQPConfig)) *confBroker {
 	t.Helper()
@@ -234,7 +234,7 @@ func rabbitctl(t *testing.T, args ...string) {
 // ----------------------------------------------------------------------------
 // Small assertion helpers. These are basic.get-based (synchronous poll) rather
 // than basic.consume-based on purpose: a lingering consumer on a shared channel
-// re-grabs requeued messages in the multi-hop cases, and StrangeQ's
+// re-grabs requeued messages in the multi-hop cases, and HardhatQ's
 // queue.declare-ok message-count is unreliable (see w7-report §7 finding F3), so
 // passive-declare depth cannot be trusted for a ready-count assertion. Draining
 // what a consumer actually receives is the honest, broker-agnostic check.
@@ -295,7 +295,7 @@ func readyCount(t *testing.T, ch *amqp.Channel, queue string) int {
 // a re-looping message by removing it between polls). A passive declare on a
 // missing queue closes the channel, so callers must only use it on a declared
 // queue. Both brokers report an accurate ready count for an idle queue here
-// (verified against RabbitMQ 4.x and embedded StrangeQ in W7); the earlier
+// (verified against RabbitMQ 4.x and embedded HardhatQ in W7); the earlier
 // "declare-ok count is unreliable" note applied only to counts taken while
 // messages were in-flight/unacked, which these cases avoid.
 func queueDepth(t *testing.T, ch *amqp.Channel, queue string) int {

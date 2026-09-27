@@ -1,4 +1,4 @@
-# StrangeQ Monitoring Scripts
+# HardhatQ Monitoring Scripts
 
 This directory contains scripts to launch the AMQP server with full observability using Prometheus and Grafana.
 
@@ -82,7 +82,7 @@ cd ../src/amqp-go/benchmark
 - **URL**: http://localhost:3000
 - **Username**: `admin`
 - **Password**: `admin`
-- **Dashboard**: "AMQP Server - StrangeQ Monitoring" (auto-loaded)
+- **Dashboard**: "AMQP Server - HardhatQ Monitoring" (auto-loaded)
 - **Features**:
   - Auto-refreshes every 5 seconds
   - Pre-configured panels for all key metrics
@@ -231,7 +231,7 @@ Common issues:
 
 4. **Verify dashboard is loaded:**
    - Go to http://localhost:3000/dashboards
-   - Look for "AMQP Server - StrangeQ Monitoring"
+   - Look for "AMQP Server - HardhatQ Monitoring"
 
 ### Performance Test Not Running
 

@@ -747,7 +747,7 @@
   "time": {"from": "now-15m", "to": "now"},
   "timepicker": {"refresh_intervals": ["5s", "10s", "30s", "1m", "5m"]},
   "timezone": "",
-  "title": "AMQP Server - StrangeQ Monitoring",
+  "title": "AMQP Server - HardhatQ Monitoring",
   "uid": "amqp-strangeq",
   "version": 1
 }

@@ -16,7 +16,7 @@ import (
 //
 // RabbitMQ's declare-ok message_count is the READY count: messages available for
 // delivery, EXCLUDING delivered-but-unacknowledged (inflight) messages. This is
-// PARITY on both brokers after the W7 fix (StrangeQ previously always reported 0;
+// PARITY on both brokers after the W7 fix (HardhatQ previously always reported 0;
 // a naive fix sourcing the storage ring count would over-report by including
 // unacked messages, since the ring retains them until ack).
 // ----------------------------------------------------------------------------

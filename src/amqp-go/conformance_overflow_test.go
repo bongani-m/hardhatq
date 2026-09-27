@@ -72,7 +72,7 @@ func TestConformance_OverflowRejectPublish(t *testing.T) {
 
 	// D1 — mandatory + reject-publish (non-confirm).
 	// RabbitMQ: mandatory covers ONLY unroutable messages; a routable-but-full
-	// message is NOT returned (silently dropped). StrangeQ EXTENSION: returns it
+	// message is NOT returned (silently dropped). HardhatQ EXTENSION: returns it
 	// via basic.return with reply-code 312/NO_ROUTE. Documented divergence.
 	t.Run("D1_MandatoryRejectPublish_ReturnBehaviour", func(t *testing.T) {
 		_, ch := b.dial(t)
@@ -89,8 +89,8 @@ func TestConformance_OverflowRejectPublish(t *testing.T) {
 			lockLog(t, "mandatory reject-publish basic.return", map[string]any{"reply-code": r.ReplyCode, "reply-text": r.ReplyText})
 			assert.True(t, expectReturn, "target=%s: received a basic.return for a routable-but-full mandatory publish", confTarget())
 			if !targetIsRabbit() {
-				// StrangeQ reuses 312/NO_ROUTE for this extension path.
-				assert.Equal(t, uint16(312), r.ReplyCode, "StrangeQ reject-publish+mandatory return reuses 312/NO_ROUTE")
+				// HardhatQ reuses 312/NO_ROUTE for this extension path.
+				assert.Equal(t, uint16(312), r.ReplyCode, "HardhatQ reject-publish+mandatory return reuses 312/NO_ROUTE")
 			}
 		case <-time.After(2 * time.Second):
 			assert.False(t, expectReturn, "target=%s: no basic.return arrived", confTarget())
@@ -98,7 +98,7 @@ func TestConformance_OverflowRejectPublish(t *testing.T) {
 	})
 
 	// D4 — fan-out where ANY reject-publish target is full.
-	// StrangeQ nacks the WHOLE publish (safest bounded signal) even though other
+	// HardhatQ nacks the WHOLE publish (safest bounded signal) even though other
 	// targets accepted it. RESOLVED in W7: real RabbitMQ 4.3.2 does the SAME —
 	// the confirm is NACK'd (Ack=false) when a reject-publish target overflows,
 	// even though the copy still lands in the unbounded target (open depth == 2 on
@@ -132,7 +132,7 @@ func TestConformance_OverflowRejectPublish(t *testing.T) {
 		openDepth := readyCount(t, ch, open)
 		lockLog(t, "fanout-any-full open-target depth", openDepth)
 
-		// PARITY (both nack): RabbitMQ 4.3.2 and StrangeQ both NACK the publish
+		// PARITY (both nack): RabbitMQ 4.3.2 and HardhatQ both NACK the publish
 		// when any reject-publish fan-out target is full.
 		wantAck := expectByTarget(t, "fanout-any-full-confirm-ack", false /*rabbit: nacks*/, false /*strangeq: nacks*/)
 		assert.Equal(t, wantAck, c2.Ack, "target=%s fanout-any-full confirm verdict", confTarget())

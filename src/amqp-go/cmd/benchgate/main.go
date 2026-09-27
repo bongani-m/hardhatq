@@ -1,4 +1,4 @@
-// Command benchgate is the no-regression referee for StrangeQ's Wave 2 perf
+// Command benchgate is the no-regression referee for HardhatQ's Wave 2 perf
 // gate (design doc "W0 — Perf-gate harness"). It compares a HEAD benchmark
 // run against the committed baseline (testdata/bench-baseline.txt) and
 // fails if any in-scope benchmark's mean regresses by more than

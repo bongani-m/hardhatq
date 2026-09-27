@@ -155,7 +155,7 @@ func TestRejectPublishConfirmInterlockNoAckCoversNackedTag(t *testing.T) {
 
 // TestRejectPublishMandatoryNonConfirmSendsReturn verifies that on a
 // non-confirm channel a mandatory publish refused by reject-publish is returned
-// to the publisher via basic.return (StrangeQ extension for publisher feedback
+// to the publisher via basic.return (HardhatQ extension for publisher feedback
 // without confirms).
 func TestRejectPublishMandatoryNonConfirmSendsReturn(t *testing.T) {
 	srv := newTransactionTestServer(t)

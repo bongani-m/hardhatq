@@ -36,14 +36,14 @@ clean:
 # RabbitMQ conformance suite (design doc "W7 — RabbitMQ conformance suite").
 # ONE set of amqp091-go assertions, behind the `conformance` build tag, runs
 # against whichever broker AMQP_TARGET selects, so both are held to
-# byte-identical wire expectations. `conformance` runs the embedded-StrangeQ
+# byte-identical wire expectations. `conformance` runs the embedded-HardhatQ
 # side (the default CI path — no external broker needed). `conformance-rabbitmq`
 # runs the SAME suite against a real RabbitMQ 4.x on $(AMQP_URL) to re-lock the
 # expected bytes; start one with:
 #   docker run -d --rm --name sq-conformance-rmq -p 5672:5672 -p 15672:15672 \
 #       rabbitmq:4-management
 # and remove it (docker rm -f sq-conformance-rmq) when done. Documented
-# StrangeQ-vs-RabbitMQ divergences are target-aware assertions (green on both);
+# HardhatQ-vs-RabbitMQ divergences are target-aware assertions (green on both);
 # a `-v` run enumerates them via DIVERGENCE[...] / LOCK[...] log lines.
 CONFORMANCE_PKGS ?= . ./server
 CONFORMANCE_RUN  ?= TestConformance

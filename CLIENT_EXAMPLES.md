@@ -1,6 +1,6 @@
 # Client Examples
 
-Complete examples for connecting to StrangeQ from various programming languages.
+Complete examples for connecting to HardhatQ from various programming languages.
 
 ## Table of Contents
 
@@ -24,7 +24,7 @@ pip install pika
 import pika
 
 def publish_message():
-    # Connect to StrangeQ
+    # Connect to HardhatQ
     connection = pika.BlockingConnection(
         pika.ConnectionParameters('localhost')
     )

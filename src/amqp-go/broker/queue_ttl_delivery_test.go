@@ -175,7 +175,7 @@ func TestTTL_PerMessageExpiration_IsMinWithQueue(t *testing.T) {
 
 // TestTTL_ZeroTTL_DroppedNotDelivered documents and pins the ttl=0 divergence
 // from RabbitMQ. RabbitMQ delivers a ttl=0 message IFF a consumer is ready at
-// publish (direct handoff); it otherwise drops it. StrangeQ has no publish-time
+// publish (direct handoff); it otherwise drops it. HardhatQ has no publish-time
 // direct handoff — a ttl=0 message is stamped with deadline==enqueue and is
 // therefore expired at the very first delivery/get head-check, so even a parked-
 // ready consumer never receives it. This test locks that drop-not-deliver
@@ -200,7 +200,7 @@ func TestTTL_ZeroTTL_DroppedNotDelivered(t *testing.T) {
 
 	select {
 	case d := <-c.Messages:
-		t.Fatalf("ttl=0 message was delivered to a ready consumer (StrangeQ divergence expects a drop): tag=%d", d.DeliveryTag)
+		t.Fatalf("ttl=0 message was delivered to a ready consumer (HardhatQ divergence expects a drop): tag=%d", d.DeliveryTag)
 	case <-time.After(300 * time.Millisecond):
 	}
 	require.Eventually(t, func() bool { return qs.Depth() == 0 }, time.Second, 5*time.Millisecond,

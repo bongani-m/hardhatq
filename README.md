@@ -1,4 +1,4 @@
-# StrangeQ — AMQP 0.9.1 Message Broker
+# HardhatQ — AMQP 0.9.1 Message Broker
 
 A high-performance AMQP 0.9.1 message broker written in Go. Compatible with RabbitMQ clients and tools.
 
@@ -6,9 +6,9 @@ A high-performance AMQP 0.9.1 message broker written in Go. Compatible with Rabb
 [![Go Report Card](https://goreportcard.com/badge/github.com/maxpert/strangeq)](https://goreportcard.com/report/github.com/maxpert/strangeq)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Why StrangeQ?
+## Why HardhatQ?
 
-RabbitMQ is the gold standard for AMQP 0.9.1, but it runs on the Erlang VM — a separate runtime with its own scheduling, memory model, and operational overhead. StrangeQ exists for teams that want:
+RabbitMQ is the gold standard for AMQP 0.9.1, but it runs on the Erlang VM — a separate runtime with its own scheduling, memory model, and operational overhead. HardhatQ exists for teams that want:
 
 - **Embeddable**: Run it as a library inside your Go application. No separate process, no Erlang runtime, no Docker image required for tests.
 - **Go-native observability**: Native `net/http/pprof` endpoints for CPU, memory, goroutine, and mutex profiling. Use `go tool pprof` directly — no Erlang tooling required.
@@ -269,27 +269,27 @@ All numbers below are **end-to-end consumed msg/s** — every published message 
 
 **Methodology**
 - Single machine: Apple Silicon, 16 cores.
-- RabbitMQ 4.3 runs in an [OrbStack](https://orbstack.dev/) ARM64-native container (not emulated) with in-container storage. StrangeQ runs host-native. Both use local disk (no host bind mount).
+- RabbitMQ 4.3 runs in an [OrbStack](https://orbstack.dev/) ARM64-native container (not emulated) with in-container storage. HardhatQ runs host-native. Both use local disk (no host bind mount).
 - 20-second runs, 1 KB message bodies unless noted.
 - Durable queues, publisher confirms, fsync enabled on both, consumer prefetch 100, manual acks.
 - Figures are steady-state medians of the per-second consumed rate. Zero message loss and zero unconfirmed publishes on every run. Measured 2026-07-14.
 
 ### Head-to-Head vs RabbitMQ 4.3 (durable + publisher confirms)
 
-| Workload (1 KB body unless noted) | RabbitMQ 4.3 | StrangeQ | StrangeQ advantage |
+| Workload (1 KB body unless noted) | RabbitMQ 4.3 | HardhatQ | HardhatQ advantage |
 |---|--:|--:|--:|
 | 1 pub / 1 con | 64,532 msg/s | 108,000 msg/s | 1.67x |
 | 10 pub / 10 con | 25,381 msg/s | 113,667 msg/s | 4.48x |
 | 30 pub / 30 con | 24,232 msg/s | 106,906 msg/s | 4.41x |
 | 64 KB body, 1 pub / 1 con | 21,157 msg/s | 23,217 msg/s | 1.10x |
 
-RabbitMQ 4.3 rejects transient non-exclusive queues by default, so the head-to-head is run on durable queues with publisher confirms. Non-durable queues on StrangeQ reach roughly 140K msg/s (1 pub / 1 con, 1 KB, host-native).
+RabbitMQ 4.3 rejects transient non-exclusive queues by default, so the head-to-head is run on durable queues with publisher confirms. Non-durable queues on HardhatQ reach roughly 140K msg/s (1 pub / 1 con, 1 KB, host-native).
 
 ### Multi-queue scaling (durable + publisher confirms)
 
 3 producers / 3 consumers per queue, 1 KB bodies, one perftest process per queue. Aggregate consumed msg/s, zero loss, evenly balanced across queues. Measured 2026-07-26.
 
-| Queues | StrangeQ aggregate | vs single queue |
+| Queues | HardhatQ aggregate | vs single queue |
 |---|--:|--:|
 | 1 | 142,159 msg/s | — |
 | 2 | 174,339 msg/s | 1.20x |
@@ -333,7 +333,7 @@ A Go microbenchmark (`BenchmarkVersus`) also exists for allocation/latency profi
 
 ### AMQP Protocol Methods
 
-| Method | StrangeQ | RabbitMQ |
+| Method | HardhatQ | RabbitMQ |
 |--------|----------|----------|
 | `connection.start` / `start-ok` | Yes | Yes |
 | `connection.tune` / `tune-ok` | Yes | Yes |
@@ -369,7 +369,7 @@ A Go microbenchmark (`BenchmarkVersus`) also exists for allocation/latency profi
 
 ### Exchange Types
 
-| Type | StrangeQ | RabbitMQ |
+| Type | HardhatQ | RabbitMQ |
 |------|----------|----------|
 | `direct` | Yes | Yes |
 | `fanout` | Yes | Yes |
@@ -378,7 +378,7 @@ A Go microbenchmark (`BenchmarkVersus`) also exists for allocation/latency profi
 
 ### Security
 
-| Feature | StrangeQ | RabbitMQ |
+| Feature | HardhatQ | RabbitMQ |
 |---------|----------|----------|
 | TLS | Yes | Yes |
 | Mutual TLS (mTLS) | Yes | Yes |
@@ -391,7 +391,7 @@ A Go microbenchmark (`BenchmarkVersus`) also exists for allocation/latency profi
 
 ### Persistence & Reliability
 
-| Feature | StrangeQ | RabbitMQ |
+| Feature | HardhatQ | RabbitMQ |
 |---------|----------|----------|
 | Durable queues | Yes | Yes |
 | Durable exchanges | Yes | Yes |
@@ -402,7 +402,7 @@ A Go microbenchmark (`BenchmarkVersus`) also exists for allocation/latency profi
 
 ### RabbitMQ Extensions (queue `x-arguments`)
 
-| Extension | StrangeQ | Notes |
+| Extension | HardhatQ | Notes |
 |-----------|----------|-------|
 | `x-message-ttl` (per-queue) | Yes | Message expires after N ms in the queue |
 | Per-message `expiration` | Yes | Effective TTL = min(per-message, per-queue) |
@@ -420,10 +420,10 @@ Dead-letter `reason` values match RabbitMQ: `rejected` (nack/reject with requeue
 
 ### Behavioral Divergences from RabbitMQ
 
-StrangeQ is wire-compatible, but a few observable behaviors intentionally differ. All are verified against RabbitMQ 4.3 by the conformance suite (`make conformance-rabbitmq`):
+HardhatQ is wire-compatible, but a few observable behaviors intentionally differ. All are verified against RabbitMQ 4.3 by the conformance suite (`make conformance-rabbitmq`):
 
-- **`mandatory` + full `reject-publish` queue**: StrangeQ returns the message via `basic.return` (reply code 312); RabbitMQ does not return a routable-but-full message.
-- **`x-message-ttl: 0` / `expiration: 0` with no ready consumer**: the message is dropped. StrangeQ has no publish-time direct hand-off to a waiting consumer, so a zero-TTL message cannot be delivered-before-expiry.
+- **`mandatory` + full `reject-publish` queue**: HardhatQ returns the message via `basic.return` (reply code 312); RabbitMQ does not return a routable-but-full message.
+- **`x-message-ttl: 0` / `expiration: 0` with no ready consumer**: the message is dropped. HardhatQ has no publish-time direct hand-off to a waiting consumer, so a zero-TTL message cannot be delivered-before-expiry.
 - **Malformed / non-numeric per-message `expiration`**: treated as "no TTL" (lenient) rather than a channel error.
 - **`reject-publish` inside a transaction**: not enforced (a tx-published message to a full reject-publish queue is accepted); `drop-head` inside a transaction *is* enforced.
 

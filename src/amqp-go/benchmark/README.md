@@ -1,4 +1,4 @@
-# StrangeQ Performance Benchmarks
+# HardhatQ Performance Benchmarks
 
 ## Quick Start
 
@@ -42,9 +42,9 @@ Final results include total throughput and consumer latency percentiles (min, p5
 
 ## Head-to-Head vs RabbitMQ 4.3
 
-Measured 2026-07-14. StrangeQ host-native, RabbitMQ 4.3 in OrbStack ARM64 container. 20-second runs, durable queues, publisher confirms, fsync enabled, 1 KB messages.
+Measured 2026-07-14. HardhatQ host-native, RabbitMQ 4.3 in OrbStack ARM64 container. 20-second runs, durable queues, publisher confirms, fsync enabled, 1 KB messages.
 
-| Workload | RabbitMQ 4.3 | StrangeQ | Advantage |
+| Workload | RabbitMQ 4.3 | HardhatQ | Advantage |
 |---|--:|--:|--:|
 | 1 pub / 1 con | 64,532 msg/s | 108,000 msg/s | 1.67x |
 | 10 pub / 10 con | 25,381 msg/s | 113,667 msg/s | 4.48x |

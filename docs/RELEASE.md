@@ -2,7 +2,7 @@
 
 ## Versioning
 
-StrangeQ follows [Semantic Versioning](https://semver.org/).
+HardhatQ follows [Semantic Versioning](https://semver.org/).
 
 ## Creating a Release
 

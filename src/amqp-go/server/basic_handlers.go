@@ -510,7 +510,7 @@ func (s *Server) processCompleteMessage(conn *protocol.Connection, channelID uin
 			//     contiguous ack watermark can never re-confirm (deferred behind
 			//     any still-pipelined durable predecessor; see settleRejectConfirm),
 			//   - else mandatory: return the refused message so a non-confirm
-			//     publisher gets feedback (StrangeQ extension — RabbitMQ does not
+			//     publisher gets feedback (HardhatQ extension — RabbitMQ does not
 			//     return a routable-but-full message; see W7 divergence notes),
 			//   - else: silently drop (RabbitMQ parity).
 			if confirmTag > 0 {

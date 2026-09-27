@@ -73,7 +73,7 @@ func assertXDeathEntryTypes(t *testing.T, e amqp.Table, expectOrigExp bool) (str
 }
 
 // assertLastDeath checks x-last-death-* headers target-awarely.
-// RabbitMQ 4.x emits x-last-death-{reason,queue,exchange}; StrangeQ does NOT
+// RabbitMQ 4.x emits x-last-death-{reason,queue,exchange}; HardhatQ does NOT
 // (frozen seam #4 deferred it). Documented divergence F2.
 func assertLastDeath(t *testing.T, h amqp.Table, wantReason, wantQueue string) {
 	t.Helper()
@@ -166,9 +166,9 @@ func TestConformance_TTLExpiryToDLX(t *testing.T) {
 // ----------------------------------------------------------------------------
 // Case 2 — reject/nack requeue=false → DLX with reason=rejected.
 //
-// DIVERGENCE F1 (StrangeQ is WRONG on the wire): RabbitMQ 4.3.2 STRIPS the
+// DIVERGENCE F1 (HardhatQ is WRONG on the wire): RabbitMQ 4.3.2 STRIPS the
 // message Expiration on dead-letter for ANY reason and records the original in
-// x-death.original-expiration. StrangeQ preserves Expiration on rejected/maxlen
+// x-death.original-expiration. HardhatQ preserves Expiration on rejected/maxlen
 // and omits original-expiration (frozen seam #3). Both branches asserted here.
 // ----------------------------------------------------------------------------
 
@@ -241,7 +241,7 @@ func TestConformance_MaxLenDropHeadToDLX(t *testing.T) {
 	})
 
 	// Single body larger than x-max-length-bytes into an EMPTY queue.
-	// DIVERGENCE F4: RabbitMQ drop-head DROPS it (queue ends empty); StrangeQ
+	// DIVERGENCE F4: RabbitMQ drop-head DROPS it (queue ends empty); HardhatQ
 	// ACCEPTS it (at-or-over: the first message is always kept). Documented.
 	t.Run("SingleOversizeBody_DropHead", func(t *testing.T) {
 		b := newConfBroker(t)
@@ -268,7 +268,7 @@ func TestConformance_MaxLenDropHeadToDLX(t *testing.T) {
 // x-overflow. With the default drop-head the target evicts its oldest and ACCEPTS
 // the dead-letter, so it stays AT its cap (depth 1) holding the NEWEST body.
 //
-// This was a CONFIRMED-REAL divergence in W7: StrangeQ's republishToTargets gated
+// This was a CONFIRMED-REAL divergence in W7: HardhatQ's republishToTargets gated
 // only on the ring backpressure high-water mark (AtHighWaterMark), not on the
 // target's policy.MaxLength / x-overflow, so the target OVERSHOT its cap (kept
 // BOTH, depth 2). Bug#3 wired the target-overflow policy into republishToTargets
@@ -364,7 +364,7 @@ func TestConformance_DeadLetterIntoRejectPublishTarget(t *testing.T) {
 // ----------------------------------------------------------------------------
 // Case 5 — x-death structure: field types, aggregation by (queue,reason),
 // most-recent-first ordering, x-first-death-* set once, x-last-death-*
-// (RabbitMQ 4.x emits it; StrangeQ does not — divergence F2).
+// (RabbitMQ 4.x emits it; HardhatQ does not — divergence F2).
 //
 // Drives a reject A↔B cycle (reject cycles never drop, frozen seam #2) for 4
 // hops: deaths A,B,A,B. That aggregates (A,rejected)=2 and (B,rejected)=2 and
@@ -428,13 +428,13 @@ func TestConformance_XDeathStructure(t *testing.T) {
 	assert.Equal(t, aQ, d.Headers["x-first-death-queue"], "x-first-death-queue must be the ORIGINAL queue A")
 	assert.Equal(t, ax, d.Headers["x-first-death-exchange"], "x-first-death-exchange must be the ORIGINAL exchange ax")
 
-	// x-last-death-* (RabbitMQ 4.x): most-recent death (queue B). StrangeQ omits.
+	// x-last-death-* (RabbitMQ 4.x): most-recent death (queue B). HardhatQ omits.
 	assertLastDeath(t, d.Headers, reasonRejected, bQ)
 }
 
 // ----------------------------------------------------------------------------
 // Case 8 — durable x-death round-trip: a persistent dead-lettered message
-// retains x-death across a broker restart (embedded StrangeQ reopens the SAME
+// retains x-death across a broker restart (embedded HardhatQ reopens the SAME
 // storage path; RabbitMQ's durable queue survives in the live broker).
 // ----------------------------------------------------------------------------
 

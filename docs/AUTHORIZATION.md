@@ -1,6 +1,6 @@
 # Authorization
 
-StrangeQ implements RabbitMQ-compatible authorization using per-user, per-vhost permission triples.
+HardhatQ implements RabbitMQ-compatible authorization using per-user, per-vhost permission triples.
 
 ## Permission Model
 

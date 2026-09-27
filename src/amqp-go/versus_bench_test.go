@@ -15,7 +15,7 @@ import (
 )
 
 // ============================================================================
-// Head-to-head benchmarks: StrangeQ vs RabbitMQ
+// Head-to-head benchmarks: HardhatQ vs RabbitMQ
 //
 // Same Go client (amqp091-go), same message size (12 bytes), same ack modes.
 // The only variable is the broker.
@@ -23,7 +23,7 @@ import (
 // To benchmark RabbitMQ:
 //   AMQP_TARGET=rabbitmq go test . -run='^$' -bench="BenchmarkVersus" -benchmem -benchtime=50000x -count=3
 //
-// To benchmark StrangeQ (default, no AMQP_TARGET env var):
+// To benchmark HardhatQ (default, no AMQP_TARGET env var):
 //   go test . -run='^$' -bench="BenchmarkVersus" -benchmem -benchtime=50000x -count=3
 //
 // RabbitMQ must be running on localhost:5672 (e.g. docker run -d -p 5672:5672 rabbitmq:4.3-management).
@@ -37,7 +37,7 @@ func versusURI(b *testing.B) (string, func()) {
 		return "amqp://guest:guest@localhost:5672/", func() {}
 	}
 
-	// StrangeQ: start embedded server
+	// HardhatQ: start embedded server
 	port := 17000 + int(benchPortCounter.Add(1))
 	addr := fmt.Sprintf("127.0.0.1:%d", port)
 	cfg := config.DefaultConfig()

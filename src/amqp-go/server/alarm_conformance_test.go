@@ -9,10 +9,10 @@ import (
 	"github.com/maxpert/amqp-go/protocol"
 )
 
-// W7 conformance (white-box): lock StrangeQ's connection.blocked reason shortstrs
+// W7 conformance (white-box): lock HardhatQ's connection.blocked reason shortstrs
 // against the values captured from real RabbitMQ 4.3.2 (see w7-report.md §7 and
 // the rabbit-only TestConformance_RabbitMQAlarmReasons capture). The black-box
-// dual-target suite can only trip StrangeQ's DISK arm on a non-Linux host (the
+// dual-target suite can only trip HardhatQ's DISK arm on a non-Linux host (the
 // memory arm is disarmed there), so the memory + combined strings are compared
 // to RabbitMQ here, at the wire, via the real emission path.
 //

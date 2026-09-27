@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# StrangeQ - Launch Server with Full Monitoring & Load Test
+# HardhatQ - Launch Server with Full Monitoring & Load Test
 # This script starts the AMQP server, Prometheus, Grafana, and runs a performance test
 
 set -e
@@ -256,7 +256,7 @@ monitor_progress() {
 }
 
 main() {
-    print_header "StrangeQ - Launch with Monitoring"
+    print_header "HardhatQ - Launch with Monitoring"
     
     # Check dependencies
     check_dependencies

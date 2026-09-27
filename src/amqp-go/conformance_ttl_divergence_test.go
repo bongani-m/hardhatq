@@ -18,7 +18,7 @@ import (
 
 // ttl=0 with a READY consumer.
 // RabbitMQ: delivers a ttl=0 message iff a consumer is ready at publish time.
-// StrangeQ: has no publish-time direct-handoff, so a ttl=0 message is stamped
+// HardhatQ: has no publish-time direct-handoff, so a ttl=0 message is stamped
 // deadline==enqueue and dropped at the first head-check — never delivered.
 // Documented divergence (w4-report ttl=0 decision).
 func TestConformance_TTLZero_ReadyConsumer(t *testing.T) {
@@ -52,7 +52,7 @@ func TestConformance_TTLZero_ReadyConsumer(t *testing.T) {
 }
 
 // Malformed / non-numeric per-message expiration.
-// StrangeQ: treats a malformed Expiration as NO per-message TTL (delivered
+// HardhatQ: treats a malformed Expiration as NO per-message TTL (delivered
 // normally; queue TTL still applies). Lock what RabbitMQ does (it may reject
 // the publish with a channel exception, or ignore the field).
 func TestConformance_MalformedExpiration(t *testing.T) {
@@ -83,11 +83,11 @@ func TestConformance_MalformedExpiration(t *testing.T) {
 		true,                                // strangeq: treats as no-TTL, channel survives
 	)
 	if !targetIsRabbit() {
-		assert.True(t, wantSurvived, "StrangeQ must treat a malformed expiration as no-TTL and keep the channel usable")
+		assert.True(t, wantSurvived, "HardhatQ must treat a malformed expiration as no-TTL and keep the channel usable")
 		// Message should be deliverable (no TTL applied).
 		msg, ok, getErr := ch.Get(q, true)
 		require.NoError(t, getErr)
-		assert.True(t, ok, "StrangeQ must deliver a message with a malformed (ignored) expiration")
+		assert.True(t, ok, "HardhatQ must deliver a message with a malformed (ignored) expiration")
 		if ok {
 			assert.Equal(t, []byte("bad-exp"), msg.Body)
 		}

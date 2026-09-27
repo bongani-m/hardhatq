@@ -20,15 +20,15 @@ import (
 // ----------------------------------------------------------------------------
 // Case 7 — connection.blocked / unblocked + the negative-capability case.
 //
-// StrangeQ can only be forced into a resource alarm black-box via its DISK arm
+// HardhatQ can only be forced into a resource alarm black-box via its DISK arm
 // (the memory arm is disarmed on non-Linux hosts), so the end-to-end dual-target
 // assertion uses the disk alarm. The memory + combined reason strings are locked
 // against real RabbitMQ (TestConformance_RabbitMQAlarmReasons, rabbit-only) and
-// compared to StrangeQ's alarmReason() in the white-box server conformance test
+// compared to HardhatQ's alarmReason() in the white-box server conformance test
 // (server/alarm_conformance_test.go).
 // ----------------------------------------------------------------------------
 
-// armDiskAlarmBroker returns a dual-target broker whose embedded StrangeQ side is
+// armDiskAlarmBroker returns a dual-target broker whose embedded HardhatQ side is
 // configured so its DISK arm trips immediately (disk-free floor set absurdly high
 // so real free space is always below it). For RabbitMQ the config is ignored and
 // the caller forces the alarm via rabbitmqctl.
@@ -66,7 +66,7 @@ func TestConformance_ConnectionBlockedDiskAlarm(t *testing.T) {
 
 	q := uniqueName("blk")
 	declareDurable(t, ch, q, nil)
-	// Become a publisher: StrangeQ blocks only publisher connections.
+	// Become a publisher: HardhatQ blocks only publisher connections.
 	_ = ch.PublishWithContext(t.Context(), "", q, false, false, amqp.Publishing{Body: []byte("p")})
 
 	wantReason := expectByTarget(t, "disk-connection.blocked-reason", lockedRMQReasonDisk, strangeQReasonDisk)
@@ -81,7 +81,7 @@ func TestConformance_ConnectionBlockedDiskAlarm(t *testing.T) {
 	}
 
 	// Unblock lifecycle: RabbitMQ can be un-alarmed at runtime (black-box).
-	// StrangeQ's config-armed disk alarm cannot be cleared at runtime black-box;
+	// HardhatQ's config-armed disk alarm cannot be cleared at runtime black-box;
 	// its unblock + reason strings are asserted in the white-box server test.
 	if targetIsRabbit() {
 		clearDiskAlarm(t, b)
@@ -184,7 +184,7 @@ func TestConformance_NegativeCapabilityNoBlockedFrame(t *testing.T) {
 	rc := &rawClient{t: t, conn: conn}
 	rc.handshakeWithoutBlockedCapability()
 	rc.openChannel(1)
-	// Publish once so StrangeQ marks this a publisher connection (HasPublished);
+	// Publish once so HardhatQ marks this a publisher connection (HasPublished);
 	// the alarm is already active, so a capability-advertising client WOULD be
 	// blocked here — this one must not be.
 	rc.publish(1, "", uniqueName("negcap-nq"), []byte("p"))

@@ -15,7 +15,7 @@ import (
 // ============================================================================
 // Drain / loss-metric regression tests (iter7).
 //
-// These exercise runBenchmark against a real embedded StrangeQ server (the
+// These exercise runBenchmark against a real embedded HardhatQ server (the
 // same client library and code path the CLI uses), NOT a mock. They pin the
 // two invariants of the loss metric:
 //
@@ -33,7 +33,7 @@ import (
 // The embedded-server setup mirrors versus_bench_test.go's versusURI.
 // ============================================================================
 
-// startEmbeddedServer boots an in-process StrangeQ server on a free loopback
+// startEmbeddedServer boots an in-process HardhatQ server on a free loopback
 // port with storage in a temp dir, and returns its AMQP URL plus a stop func.
 func startEmbeddedServer(t *testing.T) (string, func()) {
 	t.Helper()
