@@ -1,0 +1,69 @@
+---
+title: Operations
+---
+
+# Operations
+
+## systemd
+
+```bash
+sudo cp deployment/systemd/amqp-server.service /etc/systemd/system/
+sudo systemctl enable amqp-server
+sudo systemctl start amqp-server
+sudo systemctl status amqp-server
+```
+
+A production config keeps data, the certificate, and the auth file off the working directory:
+
+```yaml
+network:
+  address: :5672
+  maxconnections: 10000
+  tcpkeepalive: true
+
+storage:
+  path: /var/lib/amqp
+
+security:
+  tlsenabled: true
+  tlscertfile: /etc/amqp/cert.pem
+  tlskeyfile: /etc/amqp/key.pem
+  authenticationenabled: true
+  authenticationfilepath: /etc/amqp/auth.json
+
+server:
+  loglevel: info
+  logfile: /var/log/amqp-server.log
+  pidfile: /var/run/amqp-server.pid
+  daemonize: true
+```
+
+## Telemetry
+
+```bash
+amqp-server --config config.yaml --enable-telemetry --telemetry-port 9419
+```
+
+That port serves [Prometheus metrics](/metrics) and pprof. Leave the flag unset and the port stays closed.
+
+## Protocol tests with Docker
+
+`src/amqp-go/protocol` includes a Compose file for interoperability tests against RabbitMQ:
+
+```bash
+cd src/amqp-go/protocol
+docker compose up
+```
+
+## Engine tuning
+
+| Key | Default | Meaning |
+|-----|---------|---------|
+| `engine.ringbuffersize` | 65536 | Slots in each queue's ring. Must be a power of two |
+| `engine.spillthresholdpercent` | 80 | Ring fill before spill to the WAL |
+| `engine.walbatchsize` | 1000 | Durable messages per WAL batch |
+| `engine.walbatchtimeoutms` | 5 | Configured WAL batch timeout, in milliseconds |
+| `engine.segmentsize` | 268435456 | Cold segment file size (256 MB) |
+| `engine.consumermaxbatchsize` | 100 | Messages delivered to one consumer per poll |
+
+The commented sample is `src/amqp-go/config.sample.yaml`.

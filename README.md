@@ -2,6 +2,8 @@
 
 A high-performance AMQP 0.9.1 message broker written in Go. Compatible with RabbitMQ clients and tools.
 
+The documentation site is in [`docs/`](docs/). Pushes to `main` publish it to GitHub Pages.
+
 [![Build Status](https://github.com/maxpert/strangeq/workflows/Build%20and%20Test/badge.svg)](https://github.com/maxpert/strangeq/actions)
 [![Go Report Card](https://goreportcard.com/badge/github.com/maxpert/strangeq)](https://goreportcard.com/report/github.com/maxpert/strangeq)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -596,8 +598,8 @@ Compatible with any AMQP 0.9.1 client library:
 ## Documentation
 
 - [Client Examples](CLIENT_EXAMPLES.md) — Complete examples for Python, Node.js, and Go
-- [Authorization Guide](docs/AUTHORIZATION.md) — Permission model and access control
-- [TLS Configuration](docs/TLS.md) — TLS encryption and mutual TLS setup
+- [Authorization Guide](docs/src/pages/authorization.mdx) — Permission model and access control
+- [TLS Configuration](docs/src/pages/tls.mdx) — TLS encryption and mutual TLS setup
 - [Contributing Guidelines](CONTRIBUTING.md) — How to contribute
 - [Security Policy](SECURITY.md) — Security best practices
 

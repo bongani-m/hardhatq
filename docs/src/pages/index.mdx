@@ -1,0 +1,28 @@
+---
+title: HardhatQ
+---
+
+import { Hero } from "../components/Hero.tsx";
+
+<Hero />
+
+## What & Why?
+
+HardhatQ is an AMQP 0.9.1 message broker written in Go. RabbitMQ clients connect to it. The broker is one static binary, and the same code can run inside a Go process.
+
+**Key features:**
+
+- **AMQP 0.9.1**: Direct, fanout, topic, and headers exchanges. Publisher confirms, transactions, `basic.get`, `basic.return`, and `basic.recover`.
+- **Durable storage**: A per-queue ring buffer spills to a write-ahead log, then to segment files. Durable queues and messages come back after a restart.
+- **RabbitMQ queue arguments**: Message TTL, queue expiry, dead-letter exchanges, and length limits with `drop-head` or `reject-publish`.
+- **Auth and TLS**: SASL PLAIN and ANONYMOUS, per-vhost configure/write/read permissions, and mutual TLS.
+- **Go-native observability**: Prometheus metrics and `net/http/pprof` on the telemetry port.
+
+## When it fits
+
+| Use | How HardhatQ helps |
+|-----|--------------------|
+| **A single-node broker** | One `amqp-server` process on port 5672 |
+| **Tests inside a Go program** | Start the broker in-process. No Erlang runtime and no container |
+| **An existing AMQP client** | Go, Python, Node.js, Java, Ruby, and C# clients that speak AMQP 0.9.1 |
+| **A durable queue** | Persistent messages survive a crash and are restored on boot |

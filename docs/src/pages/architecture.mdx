@@ -1,0 +1,61 @@
+---
+title: Architecture
+---
+
+# Architecture
+
+HardhatQ is an AMQP 0.9.1 broker. Each queue has its own ring buffer, WAL cursor, and consumer dispatch.
+
+**A running process:**
+
+- Listens for AMQP on port 5672 unless `network.port` or `AMQP_NETWORK_PORT` says otherwise
+- Stores durable data under `storage.path` (default `./data`)
+- Recovers durable exchanges, queues, bindings, persistent messages, and pending acknowledgments on startup
+
+## Storage
+
+- **Ring buffer**: A per-queue lock-free ring with per-slot compare-and-swap. The default size is 65536 slots and must be a power of two.
+- **WAL spill**: When the ring reaches `spillthresholdpercent` (default 80), messages spill to a write-ahead log. Durable writes are batched (`walbatchsize` 1000) and fsynced.
+- **Segments**: Cold messages live in segment files. The process default is 256 MB.
+
+## Connection handling
+
+- The TCP reader and the frame processor run in separate goroutines.
+- ACK, NACK, and reject frames run on a dedicated goroutine so they do not block frame processing.
+- A delivery batch is written with one TCP write. Message bodies of 32 KB or larger use `writev`.
+- `channel.flow` gates delivery with one atomic load.
+
+## Crash recovery
+
+1. Validate storage integrity.
+2. Recover durable exchanges and queues.
+3. Rebuild bindings.
+4. Load persistent messages into ring buffers.
+5. Restore pending acknowledgments.
+
+```
+client  --amqp:5672-->  connection
+                           |
+                        channel
+                           |
+                     exchange router
+                      /    |    \
+                  queue  queue  queue
+                    |
+            ring -> WAL -> segments
+```
+
+## Code layout
+
+```
+src/amqp-go/
+├── cmd/amqp-server/   server entry point
+├── config/            configuration
+├── protocol/          AMQP 0.9.1 frames
+├── server/            connections and channels
+├── broker/            routing and delivery
+├── storage/           ring buffer, WAL, segments
+├── auth/              SASL and permissions
+├── metrics/           Prometheus and pprof
+└── transaction/       tx.select / tx.commit / tx.rollback
+```

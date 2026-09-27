@@ -1,0 +1,15 @@
+{
+  "index": "Introduction",
+  "getting-started": "Getting Started",
+  "architecture": "Architecture",
+  "compatibility": "Compatibility",
+  "authorization": "Authorization",
+  "tls": "TLS",
+  "operations": "Operations",
+  "metrics": "Prometheus Metrics",
+  "reference": "Reference",
+  "demo": "Demo",
+  "release": "Release",
+  "release-checklist": "Release Checklist",
+  "quick-reference": "Quick Reference"
+}

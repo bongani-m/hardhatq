@@ -1,0 +1,58 @@
+---
+title: Prometheus Metrics
+---
+
+# Prometheus Metrics
+
+Start the server with telemetry enabled. The default port is 9419.
+
+```bash
+amqp-server --enable-telemetry --telemetry-port 9419
+curl http://127.0.0.1:9419/health
+curl http://127.0.0.1:9419/metrics
+```
+
+`/health` returns `200` and the body `OK` once the listener is up. `/metrics` is Prometheus text. The metric namespace is `amqp`.
+
+Profiling is on the same port:
+
+```bash
+curl -o cpu.prof "http://127.0.0.1:9419/debug/pprof/profile?seconds=30"
+go tool pprof -http=:8080 cpu.prof
+```
+
+Heap, goroutine, and mutex profiles are `/debug/pprof/heap`, `/debug/pprof/goroutine`, and `/debug/pprof/mutex`.
+
+## Series
+
+| Metric | Description |
+|--------|-------------|
+| `amqp_connections_total` | Open connections |
+| `amqp_channels_total` | Open channels |
+| `amqp_queues_total` | Queues |
+| `amqp_queue_messages_ready` | Ready messages |
+| `amqp_queue_messages_unacknowledged` | Unacknowledged messages |
+| `amqp_messages_published_total` | Publishes |
+| `amqp_messages_delivered_total` | Deliveries |
+| `amqp_messages_acknowledged_total` | Acks |
+| `amqp_messages_unroutable_total` | Publishes that matched no queue |
+| `amqp_wal_size_bytes` | WAL size |
+| `amqp_wal_fsync_total` | WAL fsyncs |
+| `amqp_segment_count` | Cold segments |
+| `amqp_disk_free_bytes` | Free disk |
+| `amqp_memory_used_bytes` | Process memory |
+| `amqp_server_uptime_seconds` | Time since start |
+
+The scrape target also exports channel, exchange, consumer, transaction, ring-buffer, and error series. Read `/metrics` for the full set.
+
+## Scrape configuration
+
+```yaml
+scrape_configs:
+  - job_name: hardhatq
+    static_configs:
+      - targets: ["127.0.0.1:9419"]
+    scrape_interval: 15s
+```
+
+`scripts/monitoring` starts Prometheus and Grafana next to the broker. The dashboard title is "AMQP Server - HardhatQ Monitoring".

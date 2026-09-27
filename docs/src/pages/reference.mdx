@@ -1,0 +1,49 @@
+---
+title: Reference
+---
+
+# Reference
+
+## Command-line flags
+
+```
+amqp-server [options]
+
+  --config string          Configuration file path (YAML or JSON)
+  --generate-config string Write a default config file and exit
+  --version                Show version and exit
+  --enable-telemetry       Enable the Prometheus and pprof listener
+  --telemetry-port int     Telemetry port (default 9419)
+  --tls                    Enable TLS (amqps)
+  --tls-cert string        TLS certificate file (PEM)
+  --tls-key string         TLS private key file (PEM)
+  --tls-ca string          CA file for mutual TLS (PEM)
+```
+
+## Minimal config
+
+```yaml
+network:
+  address: :5672
+  port: 5672
+
+storage:
+  path: ./data
+
+server:
+  loglevel: info
+```
+
+## Environment variables
+
+The form is `AMQP_<section>_<key>`. The section and key match the config file, in uppercase.
+
+| Variable | Effect |
+|----------|--------|
+| `AMQP_NETWORK_PORT` | AMQP listen port |
+| `AMQP_STORAGE_PATH` | Data directory |
+| `AMQP_SERVER_LOGLEVEL` | `debug`, `info`, or another configured level |
+
+One underscore separates the section from the key. `AMQP_NETWORK_PORT` sets `network.port`. A key that already contains no underscore, such as `authenticationenabled`, is `AMQP_SECURITY_AUTHENTICATIONENABLED`.
+
+A flag and an environment variable both apply when you pass `--config`. See `src/amqp-go/config.sample.yaml` for every key.

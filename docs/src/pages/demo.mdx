@@ -1,0 +1,43 @@
+---
+title: Demo
+---
+
+# Demo
+
+This starts HardhatQ and sends one message with a Python client.
+
+## Start the broker
+
+```bash
+cd src/amqp-go
+go run ./cmd/amqp-server
+```
+
+The listener is `localhost:5672`. Data is written to `./data`.
+
+## Publish and consume
+
+```bash
+pip install pika
+```
+
+```python
+import pika
+
+connection = pika.BlockingConnection(pika.ConnectionParameters("localhost"))
+channel = connection.channel()
+channel.queue_declare(queue="hello")
+channel.basic_publish(exchange="", routing_key="hello", body="Hello World!")
+
+method, properties, body = channel.basic_get("hello", auto_ack=True)
+print(body)
+connection.close()
+```
+
+The same queue works from Node.js (`amqplib`) and Go (`github.com/rabbitmq/amqp091-go`). Longer examples, including consumers and exchanges, are in `CLIENT_EXAMPLES.md` at the repository root.
+
+## What to read next
+
+- [Getting Started](/getting-started) covers config files and environment variables.
+- [TLS](/tls) switches the listener to `amqps` on port 5671.
+- [Authorization](/authorization) adds per-vhost configure, write, and read permissions.

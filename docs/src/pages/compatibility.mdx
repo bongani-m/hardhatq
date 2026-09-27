@@ -1,0 +1,54 @@
+---
+title: Compatibility
+---
+
+# Compatibility
+
+HardhatQ speaks AMQP 0.9.1. These clients connect to it:
+
+- **Go**: [amqp091-go](https://github.com/rabbitmq/amqp091-go)
+- **Python**: [pika](https://pika.readthedocs.io/), aio-pika
+- **Node.js**: [amqplib](https://www.npmjs.com/package/amqplib)
+- **Java**: RabbitMQ Java Client, Spring AMQP
+- **Ruby**: bunny
+- **C#**: RabbitMQ .NET Client
+
+Exchange types are direct, fanout, topic (`*` and `#`), and headers (`x-match` of `all` or `any`). Exchange-to-exchange bindings detect cycles.
+
+## Queue arguments
+
+| Extension | HardhatQ | Notes |
+|-----------|----------|-------|
+| `x-message-ttl` | Yes | Message expires after N ms in the queue |
+| Per-message `expiration` | Yes | Effective TTL is the minimum of the per-message and per-queue values |
+| `x-expires` | Yes | Idle queue deletes after N ms with no consumers, get, or redeclare |
+| `x-dead-letter-exchange` | Yes | Rejected, expired, and evicted messages are routed again |
+| `x-dead-letter-routing-key` | Yes | Overrides the routing key; otherwise the original key is kept |
+| `x-death` / `x-first-death-*` | Yes | Array of tables with count, reason, queue, time, exchange, and routing keys |
+| `x-max-length` / `x-max-length-bytes` | Yes | Cap on ready messages |
+| `x-overflow` | Yes | `drop-head` or `reject-publish` |
+| `x-last-death-*` | No | Only `x-first-death-*` and the `x-death` array are emitted |
+| `x-max-priority` | No | Priority queues are not implemented |
+
+Dead-letter reasons match RabbitMQ: `rejected`, `expired`, and `maxlen`. A `rejected` loop is not broken. `expired` and `maxlen` are dropped when the queue name matches a queue already in the death path.
+
+## Divergences from RabbitMQ
+
+These are checked against RabbitMQ 4.3 by `make conformance-rabbitmq` in `src/amqp-go`.
+
+- **`mandatory` plus a full `reject-publish` queue**: HardhatQ returns the message with `basic.return` and reply code 312. RabbitMQ does not return a routable-but-full message.
+- **`x-message-ttl: 0` or `expiration: 0` with no ready consumer**: the message is dropped. HardhatQ has no publish-time hand-off to a waiting consumer.
+- **Malformed per-message `expiration`**: treated as no per-message TTL. The channel stays open.
+- **`reject-publish` inside a transaction**: not enforced. `drop-head` inside a transaction is enforced.
+
+## Not implemented
+
+- Clustering and high availability
+- Priority queues (`x-max-priority`)
+- Lazy queues (`x-queue-mode`)
+- Consumer priorities (`x-priority`)
+- `connection.secure` / `secure-ok`
+- SASL EXTERNAL
+- Global prefetch (`basic.qos` with `global=true`) is accepted and applied per consumer
+- Prefetch size (`prefetch_size > 0`) is rejected with reply code 540
+- A management UI and management CLI

@@ -102,7 +102,7 @@ storage:
 # Security Configuration
 # ============================================================================
 security:
-  # Enable TLS/SSL encryption (see docs/TLS.md for setup guide)
+  # Enable TLS/SSL encryption (see docs/src/pages/tls.mdx for setup guide)
   tlsenabled: false
 
   # Path to TLS certificate file (required if TLS enabled, PEM format)
@@ -133,7 +133,7 @@ security:
 
   # Enable authorization (access control)
   # When enabled, per-operation permission checks are enforced per the
-  # RabbitMQ configure/write/read model. See docs/AUTHORIZATION.md
+  # RabbitMQ configure/write/read model. See docs/src/pages/authorization.mdx
   authorizationenabled: false
 
   # Default virtual host for connections
