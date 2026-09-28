@@ -16,9 +16,10 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-const (
-	version = "0.9.1"
-	banner  = `
+// version is set with -X main.version when a release binary is built.
+var version = "0.9.1"
+
+const banner = `
     ___   __  ______  ____        ______      
    /   | /  |/  / __ \/ __ \      / ____/___   
   / /| |/ /|_/ / / / / /_/ /_____/ / __/ __ \  
@@ -28,7 +29,6 @@ const (
 AMQP 0.9.1 Server - High Performance Message Broker
 Version: %s
 `
-)
 
 func main() {
 	// Define command-line flags

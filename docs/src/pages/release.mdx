@@ -16,22 +16,19 @@ HardhatQ follows [Semantic Versioning](https://semver.org/).
    git push origin v0.1.0
    ```
 
-2. Create a GitHub release:
-   - Go to https://github.com/bongani-m/hardhatq/releases/new
-   - Select the tag
-   - Copy release notes from CHANGELOG.md
-   - Publish release
+2. GitHub Actions creates the GitHub release and publishes the container image. The release assets are:
 
-3. GitHub Actions automatically builds binaries for:
-   - macOS (arm64, amd64)
-   - Linux (amd64, arm64, 386)
-   
-   SHA256 checksums are generated and uploaded with the binaries.
+   - `hardhatq-darwin-arm64`
+   - `hardhatq-darwin-amd64`
+   - `hardhatq-linux-arm64`
+   - `hardhatq-linux-amd64`
 
-4. Verify the release:
-   - Check that all binaries are attached
-   - Download and verify checksums
-   - Test at least one binary
+   The image is `ghcr.io/bongani-m/hardhatq` tagged with the version. A stable tag is also published as `latest`. Tags containing `-alpha`, `-beta`, or `-rc` are marked prerelease and do not move `latest`.
+
+3. Verify the release:
+   - Check that all four binaries are attached
+   - Download one binary and run `./hardhatq-linux-amd64 --version`
+   - Confirm the image exists at `ghcr.io/bongani-m/hardhatq:<tag>`
 
 ## Manual Build
 
@@ -39,13 +36,10 @@ HardhatQ follows [Semantic Versioning](https://semver.org/).
 cd src/amqp-go
 VERSION="v0.1.0"
 
-GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w -X main.version=${VERSION}" -o amqp-server-darwin-arm64 ./cmd/amqp-server
-GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w -X main.version=${VERSION}" -o amqp-server-darwin-amd64 ./cmd/amqp-server
-GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X main.version=${VERSION}" -o amqp-server-linux-amd64 ./cmd/amqp-server
-GOOS=linux GOARCH=arm64 go build -ldflags="-s -w -X main.version=${VERSION}" -o amqp-server-linux-arm64 ./cmd/amqp-server
-GOOS=linux GOARCH=386  go build -ldflags="-s -w -X main.version=${VERSION}" -o amqp-server-linux-386  ./cmd/amqp-server
-
-sha256sum amqp-server-* > checksums.txt
+CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w -X main.version=${VERSION}" -o hardhatq-darwin-arm64 ./cmd/amqp-server
+CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w -X main.version=${VERSION}" -o hardhatq-darwin-amd64 ./cmd/amqp-server
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X main.version=${VERSION}" -o hardhatq-linux-amd64 ./cmd/amqp-server
+CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags="-s -w -X main.version=${VERSION}" -o hardhatq-linux-arm64 ./cmd/amqp-server
 ```
 
 ## Hotfix Releases
@@ -63,7 +57,7 @@ sha256sum amqp-server-* > checksums.txt
    git push origin v0.1.1
    ```
 
-4. Create GitHub release.
+4. Pushing the tag creates the GitHub release and container image.
 
 5. Merge back to main:
    ```bash

@@ -9,12 +9,11 @@ Purpose: Automated multi-platform binary releases for AMQP-Go
   GITHUB ACTIONS WORKFLOWS (.github/workflows/)
 =================================================================
 
-✅ release.yml                 Multi-platform release builds
-                               - Builds for 7 platforms (macOS, Linux, Windows)
-                               - Generates SHA256 checksums
-                               - Uploads to GitHub releases
-                               - Builds Docker images
-                               - Triggers on: release creation, manual dispatch
+✅ cd-release.yaml             Multi-platform release builds
+                               - Builds linux and darwin executables
+                               - Uploads them to a GitHub release
+                               - Publishes ghcr.io/bongani-m/hardhatq
+                               - Triggers on: v* tags, manual dispatch
 
 ✅ build.yml                   Continuous Integration
                                - Runs tests with race detection
