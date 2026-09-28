@@ -104,7 +104,7 @@ deps-update: ## Update dependencies
 
 docker-build: ## Build Docker image
 	@echo "Building Docker image..."
-	cd $(SRC_DIR) && docker build -t $(DOCKER_IMAGE):$(VERSION) -t $(DOCKER_IMAGE):latest .
+	docker build -t $(DOCKER_IMAGE):$(VERSION) -t $(DOCKER_IMAGE):latest .
 	@echo "Docker image built: $(DOCKER_IMAGE):$(VERSION)"
 
 docker-run: ## Run Docker container
