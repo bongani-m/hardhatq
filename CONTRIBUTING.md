@@ -1,16 +1,18 @@
 # Contributing
 
+HardhatQ is a fork of [StrangeQ](https://github.com/maxpert/strangeq). Changes land in this repository.
+
 ## Getting Started
 
-1. Fork the repository on GitHub
+1. Fork [hardhatq](https://github.com/bongani-m/hardhatq) on GitHub
 2. Clone your fork:
    ```bash
-   git clone https://github.com/YOUR-USERNAME/strangeq.git
-   cd strangeq/src/amqp-go
+   git clone https://github.com/YOUR-USERNAME/hardhatq.git
+   cd hardhatq/src/amqp-go
    ```
 3. Add upstream remote:
    ```bash
-   git remote add upstream https://github.com/maxpert/strangeq.git
+   git remote add upstream https://github.com/bongani-m/hardhatq.git
    ```
 
 ## Development Setup

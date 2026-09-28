@@ -43,7 +43,15 @@ export default {
     </>
   ),
   navigation: true,
-  footer: { text: <>MIT {new Date().getFullYear()} © HardhatQ.</> },
+  footer: {
+    text: (
+      <>
+        MIT. Fork of{" "}
+        <a href="https://github.com/maxpert/strangeq">StrangeQ</a> (AMQP-Go
+        Contributors), modified 2026-09-27.
+      </>
+    ),
+  },
   editLink: { text: "Edit this page on GitHub" },
   unstable_faviconGlyph: "⛑",
 };

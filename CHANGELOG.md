@@ -30,5 +30,5 @@
 - 113,667 msg/s durable (10 pub / 10 con)
 - 1.10x to 4.48x faster than RabbitMQ 4.3 on durable workloads
 
-[Unreleased]: https://github.com/maxpert/strangeq/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/maxpert/strangeq/releases/tag/v0.1.0
+[Unreleased]: https://github.com/bongani-m/hardhatq/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/bongani-m/hardhatq/releases/tag/v0.1.0

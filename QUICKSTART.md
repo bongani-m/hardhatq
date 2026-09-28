@@ -1,10 +1,12 @@
 # Quick Start
 
+HardhatQ is a fork of [StrangeQ](https://github.com/maxpert/strangeq) by the AMQP-Go Contributors, modified on 2026-09-27. Copyright remains in [LICENSE](LICENSE).
+
 ## Installation
 
 ### Pre-built Binary
 
-Download from the [releases page](https://github.com/maxpert/strangeq/releases):
+Download from the [releases page](https://github.com/bongani-m/hardhatq/releases):
 
 ```bash
 chmod +x amqp-server-*
@@ -15,17 +17,15 @@ amqp-server --version
 ### From Source
 
 ```bash
-git clone https://github.com/maxpert/strangeq.git
-cd strangeq/src/amqp-go
+git clone https://github.com/bongani-m/hardhatq.git
+cd hardhatq/src/amqp-go
 go build -o amqp-server ./cmd/amqp-server
 sudo mv amqp-server /usr/local/bin/
 ```
 
 ### Go Install
 
-```bash
-go install github.com/maxpert/amqp-go/cmd/amqp-server@latest
-```
+The Go module path is still `github.com/maxpert/amqp-go`. `go install github.com/maxpert/amqp-go/cmd/amqp-server@latest` installs upstream StrangeQ. Build this fork from the clone above.
 
 ## Start Server
 

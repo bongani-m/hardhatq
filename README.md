@@ -1,11 +1,11 @@
 # HardhatQ — AMQP 0.9.1 Message Broker
 
-A high-performance AMQP 0.9.1 message broker written in Go. Compatible with RabbitMQ clients and tools.
+A high-performance AMQP 0.9.1 message broker written in Go. Compatible with RabbitMQ clients and tools. HardhatQ is a fork of [StrangeQ](https://github.com/maxpert/strangeq) by the AMQP-Go Contributors, modified on 2026-09-27. Copyright remains in [LICENSE](LICENSE).
 
 The documentation site is in [`docs/`](docs/). Pushes to `main` publish it to GitHub Pages.
 
-[![Build Status](https://github.com/maxpert/strangeq/workflows/Build%20and%20Test/badge.svg)](https://github.com/maxpert/strangeq/actions)
-[![Go Report Card](https://goreportcard.com/badge/github.com/maxpert/strangeq)](https://goreportcard.com/report/github.com/maxpert/strangeq)
+[![Build Status](https://github.com/bongani-m/hardhatq/workflows/Build%20and%20Test/badge.svg)](https://github.com/bongani-m/hardhatq/actions)
+[![Go Report Card](https://goreportcard.com/badge/github.com/bongani-m/hardhatq)](https://goreportcard.com/report/github.com/bongani-m/hardhatq)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Why HardhatQ?
@@ -49,7 +49,7 @@ RabbitMQ is the gold standard for AMQP 0.9.1, but it runs on the Erlang VM — a
 
 ### Pre-built Binaries
 
-Download the latest release for your platform from the [releases page](https://github.com/maxpert/strangeq/releases).
+Download the latest release for your platform from the [releases page](https://github.com/bongani-m/hardhatq/releases).
 
 ```bash
 # macOS/Linux
@@ -63,17 +63,15 @@ amqp-server --version
 ### From Source
 
 ```bash
-git clone https://github.com/maxpert/strangeq.git
-cd strangeq/src/amqp-go
+git clone https://github.com/bongani-m/hardhatq.git
+cd hardhatq/src/amqp-go
 go build -o amqp-server ./cmd/amqp-server
 sudo mv amqp-server /usr/local/bin/
 ```
 
 ### Go Install
 
-```bash
-go install github.com/maxpert/amqp-go/cmd/amqp-server@latest
-```
+The Go module path is still `github.com/maxpert/amqp-go`. `go install github.com/maxpert/amqp-go/cmd/amqp-server@latest` installs upstream StrangeQ. Build this fork from the clone above.
 
 ## Quick Start
 
@@ -274,7 +272,7 @@ All numbers below are **end-to-end consumed msg/s** — every published message 
 - RabbitMQ 4.3 runs in an [OrbStack](https://orbstack.dev/) ARM64-native container (not emulated) with in-container storage. HardhatQ runs host-native. Both use local disk (no host bind mount).
 - 20-second runs, 1 KB message bodies unless noted.
 - Durable queues, publisher confirms, fsync enabled on both, consumer prefetch 100, manual acks.
-- Figures are steady-state medians of the per-second consumed rate. Zero message loss and zero unconfirmed publishes on every run. Measured 2026-07-14.
+- Figures are steady-state medians of the per-second consumed rate. Zero message loss and zero unconfirmed publishes on every run. Measured 2026-07-14 on StrangeQ, before this tree was renamed on 2026-09-27.
 
 ### Head-to-Head vs RabbitMQ 4.3 (durable + publisher confirms)
 
@@ -613,5 +611,5 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 ## Support
 
-- Report bugs: [GitHub Issues](https://github.com/maxpert/strangeq/issues)
+- Report bugs: [GitHub Issues](https://github.com/bongani-m/hardhatq/issues)
 - Security issues: See [SECURITY.md](SECURITY.md)
